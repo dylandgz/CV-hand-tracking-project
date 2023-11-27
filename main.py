@@ -23,12 +23,16 @@ labels = []
 for dir_ in os.listdir(KAGGLE_DATASET_TRAIN_DIR):
     # Constructing the full path of the sub-directory
     dir_path = os.path.join(KAGGLE_DATASET_TRAIN_DIR, dir_)
-    # print(dir_path)
+
     # Checking if the path is indeed a directory
     if os.path.isdir(dir_path):
         # Processing only the first image in each sub-directory
-        for img_path in os.listdir(dir_path)[:1]:
+        counter=0
+        for img_path in os.listdir(dir_path):
+
+            # print(os.path.basename(dir_))
             temp_data = []
+
             # Reading the image using OpenCV
             img = cv2.imread(os.path.join(dir_path, img_path))
             # Converting the image from BGR to RGB format
@@ -37,7 +41,10 @@ for dir_ in os.listdir(KAGGLE_DATASET_TRAIN_DIR):
             # Processing the image to find hand landmarks
             results = hands.process(img_rgb)
             # Checking if any hand landmarks are found
-            if results.multi_hand_landmarks:
+            print(os.path.basename(dir_))
+            if results.multi_hand_landmarks and counter<500:
+
+                counter+=1
                 # Iterating over each detected hand
                 for num, hand in enumerate(results.multi_hand_landmarks):
                     for i in range(len(hand.landmark)):
@@ -46,18 +53,34 @@ for dir_ in os.listdir(KAGGLE_DATASET_TRAIN_DIR):
                         y = hand.landmark[i].y
                         temp_data.append(x)
                         temp_data.append(y)
+
+
+
                     # Drawing hand landmarks on the image
                     mp_drawing.draw_landmarks(img_rgb, hand, mp_hands.HAND_CONNECTIONS, mp_drawing.DrawingSpec(),
                                               mp_drawing.DrawingSpec())
-            data.append(temp_data)
-            print(os.path.basename(dir_))
-            labels.append(os.path.basename(dir_))
 
-            file = open("data.pickle", "wb")
-            pickle.dump({"data": data, "labels": labels}, file)
-            file.close()
+                print(temp_data)
+                print(len(temp_data))
+                print("")
+                if(len(temp_data)<=42):
+                    data.append(temp_data)
+                    labels.append(os.path.basename(dir_))
+                # # Displaying the processed image with drawn landmarks
+                # plt.imshow(img_rgb)
+                # # # Showing the plot
+                # plt.show()
+            if counter>=500:
+                break
+                # print(len(data))
+                # print("----------------------------")
 
-            # Displaying the processed image with drawn landmarks
-            # plt.imshow(img_rgb)
-            # Showing the plot
-            # plt.show()
+
+
+
+
+file = open("data.pickle", "wb")
+pickle.dump({"data": data, "labels": labels}, file)
+file.close()
+
+
