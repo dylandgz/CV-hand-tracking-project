@@ -26,6 +26,7 @@ for row in range(len(data_labels['data'])):
 print("row " + str(row_))
 print("col " + str(col_))
 
+
 data = np.asarray(data_list)
 labels = np.asarray(data_labels['labels'])
 
@@ -48,3 +49,9 @@ print(y_test)
 
 acc_score = accuracy_score(y_predicted, y_test)
 print("Accuracy of image classifier:", acc_score * 100)
+
+
+
+file = open("model.pickle", "wb")
+pickle.dump({"model": model}, file)
+file.close()
