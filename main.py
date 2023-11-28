@@ -5,82 +5,69 @@ import os
 import mediapipe as mp
 import cv2
 import pickle
-import matplotlib.pyplot as plt  # Corrected import
+import matplotlib.pyplot as plt
 
-# Importing MediaPipe solutions for drawing utilities, hands tracking and drawing styles
+# Initialize MediaPipe solutions for drawing utilities, hands tracking, and drawing styles
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 mp_drawing_styles = mp.solutions.drawing_styles
 
-# Creating a MediaPipe Hands object for hand tracking with specified configurations
-hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.2)
+# Create a MediaPipe Hands object with specific configurations for hand tracking
+hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.8)
 
 # Path to the training dataset
-KAGGLE_DATASET_TRAIN_DIR = '/Users/dylandominguez/PycharmProjects/CV-hand-tracking-project/ASL_alphabet_dataset/asl_alphabet_train/asl_alphabet_train'
+KAGGLE_DATASET_TRAIN_DIR = '/path/to/dataset'
+
+# Initialize lists to store data and labels
 data = []
 labels = []
-# Iterating over each directory in the dataset
+
+# Iterate over each directory in the dataset (each representing a different sign)
 for dir_ in os.listdir(KAGGLE_DATASET_TRAIN_DIR):
-    # Constructing the full path of the sub-directory
     dir_path = os.path.join(KAGGLE_DATASET_TRAIN_DIR, dir_)
 
-    # Checking if the path is indeed a directory
+    # Check if the path is a directory
     if os.path.isdir(dir_path):
-        # Processing only the first image in each sub-directory
-        counter=0
+        counter = 0  # Counter to limit the number of images processed per sign
+
+        # Process only the first 750 images in each sub-directory
         for img_path in os.listdir(dir_path):
+            temp_data = []  # Temporary list to store landmark data
 
-            # print(os.path.basename(dir_))
-            temp_data = []
-
-            # Reading the image using OpenCV
+            # Read the image using OpenCV
             img = cv2.imread(os.path.join(dir_path, img_path))
-            # Converting the image from BGR to RGB format
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB
 
-            # Processing the image to find hand landmarks
+            # Process the image to find hand landmarks
             results = hands.process(img_rgb)
-            # Checking if any hand landmarks are found
-            print(os.path.basename(dir_))
-            if results.multi_hand_landmarks and counter<500:
 
-                counter+=1
-                # Iterating over each detected hand
+            # Check if any hand landmarks are found
+            if results.multi_hand_landmarks and counter < 750:
+                counter += 1
+
+                # Iterate over each detected hand
                 for num, hand in enumerate(results.multi_hand_landmarks):
                     for i in range(len(hand.landmark)):
-                        # print(hand.landmark[i])
                         x = hand.landmark[i].x
                         y = hand.landmark[i].y
-                        temp_data.append(x)
-                        temp_data.append(y)
+                        temp_data.extend([x, y])  # Append landmark coordinates to temp_data
 
+                    # Draw hand landmarks on the image
+                    mp_drawing.draw_landmarks(img_rgb, hand, mp_hands.HAND_CONNECTIONS, mp_drawing.DrawingSpec(), mp_drawing.DrawingSpec())
 
-
-                    # Drawing hand landmarks on the image
-                    mp_drawing.draw_landmarks(img_rgb, hand, mp_hands.HAND_CONNECTIONS, mp_drawing.DrawingSpec(),
-                                              mp_drawing.DrawingSpec())
-
-                print(temp_data)
-                print(len(temp_data))
-                print("")
-                if(len(temp_data)<=42):
+                # Append the processed data and label if the landmark count is within the expected range
+                if len(temp_data) <= 42:
                     data.append(temp_data)
                     labels.append(os.path.basename(dir_))
-                # # Displaying the processed image with drawn landmarks
-                # plt.imshow(img_rgb)
-                # # # Showing the plot
-                # plt.show()
-            if counter>=500:
+                    # # Displaying the processed image with drawn landmarks
+                    # plt.imshow(img_rgb)
+                    # # Showing the plot
+                    # plt.show()
+
+            # Break the loop once 750 images have been processed
+            if counter >= 750:
                 break
-                # print(len(data))
-                # print("----------------------------")
 
-
-
-
-
-file = open("data.pickle", "wb")
-pickle.dump({"data": data, "labels": labels}, file)
-file.close()
-
-
+# Serialize and save the processed data and labels
+with open("data.pickle", "wb") as file:
+    pickle.dump({"data": data, "labels": labels}, file)
