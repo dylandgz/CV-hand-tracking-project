@@ -11,6 +11,17 @@ To run this project, you need to install the following dependencies:
 - MediaPipe (Framework for building multimodal applied machine learning pipelines)
 - Scikit-learn (Machine learning library for Python)
 
+```bash
+pip install opencv-python
+```
+```bash
+pip install mediapipe
+```
+```bash
+pip install scikit-learn
+```
+
+
 ## Dataset
 
 The dataset used for this project can be found on Kaggle:
