@@ -30,3 +30,5 @@ Navigate to the folder containing the project files in the terminal and run the 
 ```bash
 python main.py
 ```
+
+press q to exit detection
