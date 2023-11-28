@@ -78,6 +78,6 @@ def GetData(num_instances, confidence):
 
 # no need to run GetData(1500, 0.8) or TrainModel() because the file project contains model.pickle. That is the model
 # we are using. It is already trained
-GetData(500, 0.8)
-TrainModel()
+# GetData(500, 0.8)
+# TrainModel()
 LiveTestingModel()
