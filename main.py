@@ -7,6 +7,7 @@ import cv2
 import pickle
 import matplotlib.pyplot as plt
 
+
 # Initialize MediaPipe solutions for drawing utilities, hands tracking, and drawing styles
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
