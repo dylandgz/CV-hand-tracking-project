@@ -3,10 +3,10 @@ import cv2
 import numpy as np
 import pickle
 
-def LiveTestingModel():
+def LiveTestingModel(model_dir):
     print("Testing Live")
     # Load the trained model from the pickle file
-    model = pickle.load(open('./model.pickle', 'rb'))
+    model = pickle.load(open(model_dir, 'rb'))
     model = model['model']
 
     # Initialize MediaPipe solutions for drawing utilities and hand tracking

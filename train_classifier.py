@@ -6,10 +6,14 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
-def TrainModel():
+from xgboost import XGBClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import LabelEncoder
+
+def TrainModel(clean_data_dir,model_dir):
     print("Training Model")
     # Load the previously saved data and labels
-    data_labels = pickle.load(open('./data.pickle', 'rb'))
+    data_labels = pickle.load(open(clean_data_dir, 'rb'))
 
     # Initialize variables to keep track of rows and columns processed
     row_, col_ = 0, 0
@@ -31,9 +35,9 @@ def TrainModel():
         data_list.append(temp)
 
     # Print the last processed row and column index for verification
-    print("training data dimension")
-    print("last row index " + str(row_))
-    print("last col index " + str(col_))
+    print("Training data dimension")
+    print(f"last row index: {row_}")
+    print(f"last col index: {col_}")
 
     # Convert the processed data and labels into NumPy arrays
     data = np.asarray(data_list)
@@ -49,17 +53,35 @@ def TrainModel():
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=True)
 
-    # Initialize and train the RandomForestClassifier model
+    # Initialize the label encoder
+    label_encoder = LabelEncoder()
+    # Encode the string labels to numerical labels
+    y_train_encoded = label_encoder.fit_transform(y_train)
+    y_test_encoded = label_encoder.transform(y_test)
+
+    # Initialize, train and make prediction the RandomForestClassifier model
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
+    y_predicted_RFC = model.predict(X_test)
 
-    # Make predictions on the test set
-    y_predicted = model.predict(X_test)
+    # Initialize, train and make prediction the XGBoost model
+    XGBoost_model = XGBClassifier()
+    XGBoost_model.fit(X_train, y_train_encoded)
+    y_predicted_XGBoost = XGBoost_model.predict(X_test)
+
+    # Initialize, train and make prediction the SVM model
+    SVM_model = SVC()
+    SVM_model.fit(X_train, y_train)
+    y_predicted_svm = SVM_model.predict(X_test)
 
     # Calculate and print the accuracy of the model
-    acc_score = accuracy_score(y_predicted, y_test)
-    print("Accuracy of image classifier:", acc_score * 100)
+    acc_score_RFC = accuracy_score(y_predicted_RFC, y_test)
+    acc_score_XGB = accuracy_score(y_predicted_XGBoost, y_test_encoded)
+    acc_score_SVM = accuracy_score(y_predicted_svm, y_test)
+    print("Accuracy of Random Forest classifier:", acc_score_RFC * 100)
+    print("Accuracy of XGB classifier:", acc_score_XGB * 100)
+    print("Accuracy of SVM classifier:", acc_score_SVM * 100)
 
     # Serialize and save the trained model
-    with open("model.pickle", "wb") as file:
+    with open(model_dir, "wb") as file:
         pickle.dump({"model": model}, file)

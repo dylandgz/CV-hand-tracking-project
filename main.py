@@ -9,7 +9,7 @@ from train_classifier import TrainModel
 from live_testing_classifier import LiveTestingModel
 
 
-def GetData(num_instances, confidence):
+def GetData(num_instances, confidence, data_dir, clean_data_dir):
     print("Getting Data From Images")
     # Initialize MediaPipe solutions for drawing utilities, hands tracking, and drawing styles
     mp_drawing = mp.solutions.drawing_utils
@@ -21,16 +21,13 @@ def GetData(num_instances, confidence):
     # Create a MediaPipe Hands object with specific configurations for hand tracking
     hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=confidence)
 
-    # Path to the training dataset
-    KAGGLE_DATASET_TRAIN_DIR = 'ASL_alphabet_dataset/asl_alphabet_train/asl_alphabet_train'
-
     # Initialize lists to store data and labels
     data = []
     labels = []
 
     # Iterate over each directory in the dataset (each representing a different sign)
-    for dir_ in os.listdir(KAGGLE_DATASET_TRAIN_DIR):
-        dir_path = os.path.join(KAGGLE_DATASET_TRAIN_DIR, dir_)
+    for dir_ in os.listdir(data_dir):
+        dir_path = os.path.join(data_dir, dir_)
 
         # Check if the path is a directory
         if os.path.isdir(dir_path):
@@ -72,12 +69,12 @@ def GetData(num_instances, confidence):
                     break
 
     # Serialize and save the processed data and labels
-    with open("data.pickle", "wb") as file:
+    with open(f"{clean_data_dir}.pickle", "wb") as file:
         pickle.dump({"data": data, "labels": labels}, file)
 
 
 # no need to run GetData(1500, 0.8) or TrainModel() because the file project contains model.pickle. That is the model
 # we are using. It is already trained
-# GetData(500, 0.8)
-# TrainModel()
-LiveTestingModel()
+# GetData(250, 0.8, 'created_ASL_dataset_right_hand', 'right_hand_clean_data')
+# TrainModel('right_hand_clean_data.pickle', 'right_hand_model')
+LiveTestingModel('right_hand_model')
