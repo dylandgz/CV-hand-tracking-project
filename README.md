@@ -55,5 +55,5 @@ Press `q` to exit detection.
 
 ## Additional Notes
 
-- It is recommended to run this project in a virtual environment.
+- It is recommended to run this project in a virtual environment with python 3.10
 - Further instructions and model details are provided in the terminal after running the main script.
