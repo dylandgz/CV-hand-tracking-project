@@ -4,13 +4,18 @@
 from train_classifier import TrainModel
 from live_testing_classifier import LiveTestingModel
 from extract_features import featureExtractionCoordinates
-
+print("================================================================================")
 print("ASL Recognition using MediaPipe Landmarks")
+print("--------------------------------------------------------------------------------")
 print("For best results, hand signs should be about 20 inches in front of the camera")
 print("This program has two different models to test")
-print("To test the difference between the regular model and the extra parameter model, try signing the letters A, T, N, and M consecutively. The extra parameter model performs slightly better")
+print("To test the difference between the regular model and the extra parameter model,")
+print("try signing the letters A, T, N, and M consecutively. The extra parameter model")
+print("performs slightly better")
 print('')
 print('Enter 0 to try the regular model, or enter 1 to try the model with extra parameters (improved)')
+print("================================================================================")
+
 
 while True:
     model_choice = input("Enter your choice (0 or 1): ")
