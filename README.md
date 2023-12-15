@@ -16,6 +16,8 @@ To run this project, install the following dependencies:
 pip install opencv-python
 pip install mediapipe
 pip install scikit-learn
+pip install pandas
+pip install xgboost
 ```
 
 ## Dataset
