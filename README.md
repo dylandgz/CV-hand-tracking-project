@@ -3,6 +3,10 @@
 
 This project is a sign language detector for the American Sign Language (ASL) alphabet.
 
+<p align="center">
+  <img src="american_sign_language.PNG" alt="ASL Alphabet" width="500"/>
+</p>
+
 ## Dependencies
 
 To run this project, install the following dependencies:
