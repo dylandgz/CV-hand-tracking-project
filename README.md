@@ -59,6 +59,9 @@ python main.py
 
 Press `q` to exit detection.
 
+![sign-language-detector-demo](sign-language-detector.gif)
+
+
 ## Additional Notes
 
 - It is recommended to run this project in a virtual environment with python 3.10
